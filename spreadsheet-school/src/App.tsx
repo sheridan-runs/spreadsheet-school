@@ -18,21 +18,36 @@ function App() {
     return `"${clean}"`;
   };
 
-  // 2. Handle Quotes for Sheet Ranges (e.g. Sheet1!A:A -> 'Sheet1'!A:A)
+  // 2. Handle Quotes for Sheet Ranges (Smartest Version)
+  // Accepts: "Sheet1!A:C", "Sheet1 A:C", "Sales Data A:C"
   const smartRange = (val: string) => {
     if (!val) return '';
-    // If there is no "!", it's just a regular range like A:C, leave it alone
-    if (!val.includes('!')) return val; 
-    
-    const parts = val.split('!');
-    const sheet = parts[0];
-    const range = parts.slice(1).join('!'); 
+    const clean = val.trim();
 
-    // If it is already quoted, leave it alone
-    if (sheet.trim().startsWith("'") && sheet.trim().endsWith("'")) return val;
+    // CASE 1: User correctly used "!" (e.g. Sheet1!A:C)
+    if (clean.includes('!')) {
+      const parts = clean.split('!');
+      const sheet = parts[0];
+      const range = parts.slice(1).join('!'); 
+      
+      // If already quoted, return as is
+      if (sheet.trim().startsWith("'") && sheet.trim().endsWith("'")) return clean;
+      
+      // Otherwise add quotes
+      return `'${sheet}'!${range}`;
+    }
 
-    // Otherwise, wrap the sheet name in single quotes
-    return `'${sheet}'!${range}`;
+    // CASE 2: User forgot "!" and used spaces (e.g. Sales Data A:C)
+    // We assume the *last* part is the Range (A:C) and everything before is the Sheet.
+    if (clean.includes(' ')) {
+       const parts = clean.split(' ');
+       const range = parts.pop(); // The last chunk (e.g. A:C)
+       const sheet = parts.join(' '); // The rest (e.g. Sales Data)
+       return `'${sheet}'!${range}`;
+    }
+
+    // CASE 3: Just a simple range (e.g. A:C)
+    return clean;
   };
 
   // --- DATA: The Top 10 Spreadsheet Functions ---
@@ -52,8 +67,8 @@ function App() {
         { 
           id: 'range', 
           label: 'The range to search inside', 
-          defaultValue: 'Sheet2!A:C',   // No quotes needed in default now
-          placeholder: 'Sheet2!A:C'     // Cleaner placeholder
+          defaultValue: 'Sheet2!A:C', 
+          placeholder: 'Sheet2!A:C' 
         },
         { 
           id: 'index', 
