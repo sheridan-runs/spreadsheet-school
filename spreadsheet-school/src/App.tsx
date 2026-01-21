@@ -1,4 +1,4 @@
-import { FileSpreadsheet, Menu, X, Github, ChevronRight, ArrowUpRight } from 'lucide-react';
+import { FileSpreadsheet, Menu, X, Github, ChevronRight, ArrowUpRight, Info, BookOpen } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { FormulaBuilder } from './components/FormulaBuilder';
 
@@ -8,7 +8,7 @@ function App() {
 
   // --- SMART HELPERS ---
   
-  // 1. Handle Quotes for Text (e.g. Apple -> "Apple")
+  // 1. Handle Quotes for Text
   const smartQuote = (val: string) => {
     if (!val) return '""'; 
     const clean = val.trim();
@@ -18,8 +18,7 @@ function App() {
     return `"${clean}"`;
   };
 
-  // 2. Handle Quotes for Sheet Ranges (Smartest Version)
-  // Accepts: "Sheet1!A:C", "Sheet1 A:C", "Sales Data A:C"
+  // 2. Handle Quotes for Sheet Ranges
   const smartRange = (val: string) => {
     if (!val) return '';
     const clean = val.trim();
@@ -29,34 +28,29 @@ function App() {
       const parts = clean.split('!');
       const sheet = parts[0];
       const range = parts.slice(1).join('!'); 
-      
-      // If already quoted, return as is
       if (sheet.trim().startsWith("'") && sheet.trim().endsWith("'")) return clean;
-      
-      // Otherwise add quotes
       return `'${sheet}'!${range}`;
     }
 
     // CASE 2: User forgot "!" and used spaces (e.g. Sales Data A:C)
-    // We assume the *last* part is the Range (A:C) and everything before is the Sheet.
     if (clean.includes(' ')) {
        const parts = clean.split(' ');
-       const range = parts.pop(); // The last chunk (e.g. A:C)
-       const sheet = parts.join(' '); // The rest (e.g. Sales Data)
+       const range = parts.pop(); 
+       const sheet = parts.join(' '); 
        return `'${sheet}'!${range}`;
     }
 
-    // CASE 3: Just a simple range (e.g. A:C)
+    // CASE 3: Just a simple range
     return clean;
   };
 
-  // --- DATA: The Top 10 Spreadsheet Functions ---
+  // --- DATA ---
   const formulas = [
     {
       id: 'vlookup',
       title: 'Connect Data (VLOOKUP)',
       description: 'The standard way to merge data. Use this when you have two separate lists (e.g., a "Sales" list and a "Product" list) and you need to pull information from one to the other.',
-      tip: 'The "Search Key" is the common thread between your two lists (like a Name, Email, or SKU). It must act as the bridge between the data sets.',
+      tip: 'Remember to check the Syntax 101 above if your sheet references aren\'t working!',
       inputs: [
         { 
           id: 'searchKey', 
@@ -77,7 +71,6 @@ function App() {
           placeholder: 'e.g. 2 (If data is in Col B)' 
         },
       ],
-      // Apply smartRange here
       generator: (v: any) => `=VLOOKUP(${v.searchKey}, ${smartRange(v.range)}, ${v.index}, FALSE)`
     },
     {
@@ -132,7 +125,6 @@ function App() {
           placeholder: 'Widgets' 
         },
       ],
-      // Applied smartRange to ranges just in case they reference other sheets
       generator: (v: any) => `=SUMIFS(${smartRange(v.sumRange)}, ${smartRange(v.criteriaRange)}, ${smartQuote(v.criterion)})`
     },
     {
@@ -160,7 +152,6 @@ function App() {
           placeholder: 'Completed' 
         },
       ],
-      // Applied smartRange here too
       generator: (v: any) => `=FILTER(${smartRange(v.range)}, ${smartRange(v.checkCol)} = ${smartQuote(v.value)})`
     },
     {
@@ -233,7 +224,6 @@ function App() {
           placeholder: 'Sheet1!A:C' 
         },
       ],
-      // IMPORTRANGE requires quotes around the string, so smartQuote handles the whole block
       generator: (v: any) => `=IMPORTRANGE(${smartQuote(v.url)}, ${smartQuote(v.range)})`
     },
     {
@@ -284,6 +274,13 @@ function App() {
   useEffect(() => {
     const handleScroll = () => {
       const scrollPosition = window.scrollY + 100;
+      // Add 'syntax' to the scroll spy
+      const syntaxEl = document.getElementById('syntax-101');
+      if (syntaxEl && syntaxEl.offsetTop <= scrollPosition && (syntaxEl.offsetTop + syntaxEl.offsetHeight) > scrollPosition) {
+         setActiveSection('syntax-101');
+         return;
+      }
+
       for (const formula of formulas) {
         const element = document.getElementById(formula.id);
         if (element && element.offsetTop <= scrollPosition && (element.offsetTop + element.offsetHeight) > scrollPosition) {
@@ -298,7 +295,7 @@ function App() {
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-slate-900 flex">
       
-      {/* SIDEBAR NAVIGATION (Desktop) */}
+      {/* SIDEBAR NAVIGATION */}
       <aside className="hidden md:flex w-72 flex-col fixed inset-y-0 border-r border-slate-200 bg-white z-10">
         <div className="p-6 border-b border-slate-100 flex items-center gap-3">
           <div className="w-10 h-10 bg-sheet-green rounded-lg flex items-center justify-center text-white shadow-sm shadow-green-200">
@@ -310,6 +307,19 @@ function App() {
           </div>
         </div>
         <nav className="flex-1 overflow-y-auto p-6 space-y-1">
+          {/* New Syntax Link */}
+          <a 
+            href="#syntax-101" 
+            className={`group flex items-center justify-between px-3 py-2 text-sm rounded-lg transition-all duration-200 mb-6 ${
+              activeSection === 'syntax-101' 
+                ? 'bg-blue-50 text-blue-600 font-bold shadow-sm' 
+                : 'text-slate-600 hover:text-blue-600 hover:bg-blue-50'
+            }`}
+          >
+            <span className="flex items-center gap-2"><BookOpen size={16}/> Syntax 101</span>
+            {activeSection === 'syntax-101' && <ChevronRight size={14} />}
+          </a>
+
           <p className="px-2 text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Core Functions</p>
           {formulas.map(f => (
             <a 
@@ -338,7 +348,6 @@ function App() {
 
       {/* MAIN CONTENT */}
       <main className="flex-1 md:ml-72 relative">
-        {/* Mobile Header */}
         <div className="md:hidden flex items-center justify-between p-4 bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm">
            <div className="flex items-center gap-2 font-bold text-lg">
               <div className="w-8 h-8 bg-sheet-green rounded flex items-center justify-center text-white"><FileSpreadsheet size={16}/></div>
@@ -349,10 +358,16 @@ function App() {
            </button>
         </div>
 
-        {/* Mobile Menu Dropdown */}
         {mobileMenuOpen && (
           <div className="md:hidden fixed inset-0 top-16 bg-white z-50 p-4 overflow-y-auto flex flex-col">
              <div className="flex-1">
+               <a 
+                 href="#syntax-101" 
+                 onClick={() => setMobileMenuOpen(false)}
+                 className="block px-4 py-4 border-b border-slate-100 text-blue-600 font-bold flex items-center gap-2"
+               >
+                 <BookOpen size={18}/> Syntax 101
+               </a>
                {formulas.map(f => (
                 <a 
                   key={f.id} 
@@ -365,7 +380,6 @@ function App() {
                ))}
              </div>
              
-             {/* Mobile Footer Link */}
              <div className="pt-6 pb-12 border-t border-slate-100 mt-4">
                <a href="https://sheridanjamieson.com" target="_blank" className="text-sm text-slate-500 flex items-center gap-2 font-medium">
                  <Github size={16} /> Built by Sheridan Jamieson
@@ -374,7 +388,7 @@ function App() {
           </div>
         )}
 
-        <div className="max-w-4xl mx-auto px-6 py-16 space-y-20">
+        <div className="max-w-4xl mx-auto px-6 py-16 space-y-16">
           
           {/* Hero */}
           <div className="space-y-6 md:pr-12">
@@ -384,23 +398,39 @@ function App() {
             <p className="text-lg md:text-xl text-slate-600 max-w-2xl leading-relaxed">
               You know <em>what</em> you want the spreadsheet to do, but you forgot the formula order. We get it.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 pt-2">
-               <div className="flex items-center gap-3 text-sm font-bold text-slate-500 bg-white border border-slate-200 px-4 py-3 rounded-full shadow-sm">
-                  <div className="w-6 h-6 rounded-full bg-green-100 text-green-600 flex items-center justify-center text-xs">1</div>
-                  Find your function
-               </div>
-               <div className="hidden sm:block text-slate-300 transform rotate-90 sm:rotate-0 self-center">→</div>
-               <div className="flex items-center gap-3 text-sm font-bold text-slate-500 bg-white border border-slate-200 px-4 py-3 rounded-full shadow-sm">
-                  <div className="w-6 h-6 rounded-full bg-green-100 text-green-600 flex items-center justify-center text-xs">2</div>
-                  Fill the blanks
-               </div>
-               <div className="hidden sm:block text-slate-300 transform rotate-90 sm:rotate-0 self-center">→</div>
-               <div className="flex items-center gap-3 text-sm font-bold text-slate-500 bg-white border border-slate-200 px-4 py-3 rounded-full shadow-sm">
-                  <div className="w-6 h-6 rounded-full bg-green-100 text-green-600 flex items-center justify-center text-xs">3</div>
-                  Copy & Paste
-               </div>
-            </div>
           </div>
+
+          {/* NEW SYNTAX CHEAT SHEET */}
+          <section id="syntax-101" className="bg-blue-50 rounded-xl border border-blue-100 p-6 md:p-8 scroll-mt-32">
+             <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center text-blue-600 shadow-sm">
+                   <Info size={20} />
+                </div>
+                <h3 className="text-xl font-bold text-slate-900">Syntax Cheat Sheet</h3>
+             </div>
+             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+                <div className="space-y-1">
+                   <div className="text-xs font-bold text-slate-400 uppercase tracking-widest">Ranges</div>
+                   <div className="font-mono text-sm bg-white px-2 py-1 rounded border border-blue-100 inline-block text-slate-700">A:C</div>
+                   <p className="text-sm text-slate-600 leading-relaxed">Use a <strong>colon (:)</strong> to select everything between two points. <br/><em>"Column A to C"</em></p>
+                </div>
+                <div className="space-y-1">
+                   <div className="text-xs font-bold text-slate-400 uppercase tracking-widest">Sheets</div>
+                   <div className="font-mono text-sm bg-white px-2 py-1 rounded border border-blue-100 inline-block text-slate-700">Sheet1!A1</div>
+                   <p className="text-sm text-slate-600 leading-relaxed">Use an <strong>exclamation (!)</strong> to separate the Sheet Name from the cell.</p>
+                </div>
+                <div className="space-y-1">
+                   <div className="text-xs font-bold text-slate-400 uppercase tracking-widest">Logic</div>
+                   <div className="font-mono text-sm bg-white px-2 py-1 rounded border border-blue-100 inline-block text-slate-700">&gt; &lt; &lt;&gt;</div>
+                   <p className="text-sm text-slate-600 leading-relaxed"><strong>&gt;</strong> (Greater than), <strong>&lt;</strong> (Less than), and <strong>&lt;&gt;</strong> (Not Equal).</p>
+                </div>
+                <div className="space-y-1">
+                   <div className="text-xs font-bold text-slate-400 uppercase tracking-widest">Text</div>
+                   <div className="font-mono text-sm bg-white px-2 py-1 rounded border border-blue-100 inline-block text-slate-700">"Done"</div>
+                   <p className="text-sm text-slate-600 leading-relaxed">Always wrap text inside <strong>double quotes</strong>.</p>
+                </div>
+             </div>
+          </section>
 
           {/* THE FEED */}
           <div className="space-y-16">
@@ -431,7 +461,6 @@ function App() {
              </a>
           </section>
           
-          {/* Footer */}
           <footer className="pt-16 pb-8 border-t border-slate-200">
              <div className="flex flex-col md:flex-row items-center justify-between gap-4">
                 <div className="text-slate-500 text-sm">
