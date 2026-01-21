@@ -7,8 +7,6 @@ function App() {
   const [activeSection, setActiveSection] = useState('');
 
   // --- SMART HELPERS ---
-  
-  // 1. Handle Quotes for Text
   const smartQuote = (val: string) => {
     if (!val) return '""'; 
     const clean = val.trim();
@@ -18,12 +16,9 @@ function App() {
     return `"${clean}"`;
   };
 
-  // 2. Handle Quotes for Sheet Ranges
   const smartRange = (val: string) => {
     if (!val) return '';
     const clean = val.trim();
-
-    // CASE 1: User correctly used "!" (e.g. Sheet1!A:C)
     if (clean.includes('!')) {
       const parts = clean.split('!');
       const sheet = parts[0];
@@ -31,25 +26,23 @@ function App() {
       if (sheet.trim().startsWith("'") && sheet.trim().endsWith("'")) return clean;
       return `'${sheet}'!${range}`;
     }
-
-    // CASE 2: User forgot "!" and used spaces (e.g. Sales Data A:C)
     if (clean.includes(' ')) {
        const parts = clean.split(' ');
        const range = parts.pop(); 
        const sheet = parts.join(' '); 
        return `'${sheet}'!${range}`;
     }
-
-    // CASE 3: Just a simple range
     return clean;
   };
 
-  // --- DATA ---
+  // --- DATA WITH SEO EXPLANATIONS ---
   const formulas = [
     {
       id: 'vlookup',
       title: 'Connect Data (VLOOKUP)',
       description: 'The standard way to merge data. Use this when you have two separate lists (e.g., a "Sales" list and a "Product" list) and you need to pull information from one to the other.',
+      // SEO OPTIMISED
+      explanation: "VLOOKUP stands for Vertical Lookup. It searches for a specific value in the first column of a dataset and returns a value in the same row from a specified column. Think of it like a restaurant menu: You look down the list for the 'Dish Name' (Search Key), and then look across to find the 'Price' (Result).",
       tip: 'Remember to check the Syntax 101 above if your sheet references aren\'t working!',
       inputs: [
         { 
@@ -77,6 +70,7 @@ function App() {
       id: 'if-logic',
       title: 'Logic Rules (IF)',
       description: 'Allows your spreadsheet to make decisions. It checks if a statement is true or false, and returns a different result for each outcome.',
+      explanation: "The IF function runs a logical test to see if a specific condition is met. If the condition is true, it returns one value; if false, it returns another. Think of it like a bouncer at a club: 'IF you are over 18, come in (True); otherwise, go home (False).'",
       tip: 'We automatically add quotes for text results. Just type Bonus and we handle the rest.',
       inputs: [
         { 
@@ -104,6 +98,7 @@ function App() {
       id: 'sumifs',
       title: 'Sum with Conditions (SUMIFS)',
       description: 'Adds up numbers, but only if they meet specific criteria. (e.g. "Total Revenue" but ONLY for "Product A").',
+      explanation: "SUMIFS adds numerical values based on multiple criteria. Unlike a simple SUM, it filters the data before adding it. Think of it like calculating your grocery bill but asking: 'What is the total cost ONLY for items that are Fruit?'",
       tip: 'The column you want to add up (Sum Range) always comes FIRST in this formula.',
       inputs: [
         { 
@@ -131,6 +126,7 @@ function App() {
       id: 'filter',
       title: 'Filter Data (FILTER)',
       description: 'The modern alternative to VLOOKUP. It returns a list of ALL matches, not just the first one. Great for creating mini-reports.',
+      explanation: "The FILTER function extracts a list of values that meet specific criteria. Unlike VLOOKUP, which only finds the first match, FILTER returns every single match. Think of it like a sieve: You pour all your data in, and only the 'Gold Nuggets' (matches) stay.",
       tip: 'This is an "Array Formula", meaning it will spill results into multiple cells. Make sure there is empty space below it!',
       inputs: [
         { 
@@ -158,6 +154,7 @@ function App() {
       id: 'text-join',
       title: 'Combine Text (TEXTJOIN)',
       description: 'Merges text from multiple cells. Unlike CONCATENATE, this lets you pick a separator (like a comma) and ignores empty cells.',
+      explanation: "TEXTJOIN combines text from multiple strings or ranges, separating them with a specified delimiter (like a comma). It is smarter than CONCATENATE because it can automatically ignore empty cells. Great for creating comma-separated lists from a column of names.",
       tip: 'We automatically handle the separator quotes for you. Just type a comma.',
       inputs: [
         { 
@@ -179,6 +176,7 @@ function App() {
       id: 'unique',
       title: 'Find Duplicates (UNIQUE)',
       description: 'Instantly looks at a messy list with repeating items and returns a clean list of only the unique values.',
+      explanation: "The UNIQUE function scans a list or range and returns a new list containing every value exactly once. It effectively removes all duplicates. Think of it like taking a roll call where you only write down each person's name the first time you hear it.",
       tip: 'Combine this with SORT to get a perfectly organized list: =SORT(UNIQUE(A:A))',
       inputs: [
         { 
@@ -194,6 +192,7 @@ function App() {
       id: 'trim',
       title: 'Clean Text (TRIM)',
       description: 'Removes accidentally added spaces from the start or end of text. Essential for cleaning data before doing a VLOOKUP.',
+      explanation: "TRIM removes all extra spaces from text, leaving only single spaces between words. It strips leading and trailing whitespace that often causes errors in formulas like VLOOKUP. It turns '  Apple  ' into 'Apple'.",
       tip: 'If your VLOOKUP is failing but the data looks correct, try wrapping it in TRIM(). " Space " is not the same as "Space".',
       inputs: [
         { 
@@ -209,6 +208,7 @@ function App() {
       id: 'importrange',
       title: 'Link Sheets (IMPORTRANGE)',
       description: 'The Google Sheets superpower. Pulls live data from a completely different spreadsheet file into your current one.',
+      explanation: "IMPORTRANGE allows you to import a range of cells from one Google Sheets spreadsheet into another. It creates a live link between files. Think of it like a tunnel connecting two different buildings, allowing data to flow from one to the other.",
       tip: 'The first time you use this, you will see a #REF! error. Hover over the cell and click "Allow Access" to connect the sheets.',
       inputs: [
         { 
@@ -230,6 +230,7 @@ function App() {
       id: 'iferror',
       title: 'Hide Errors (IFERROR)',
       description: 'Wraps around any formula to catch ugly errors like #N/A or #DIV/0! and replace them with something cleaner (or nothing at all).',
+      explanation: "IFERROR checks if a formula results in an error (like #N/A or #DIV/0!). If an error is found, it returns a custom value (like 'Not Found' or a blank cell) instead of the scary error code. It acts like a safety net for your formulas.",
       tip: 'Leave the "What to show" box blank to simply show an empty cell if an error occurs.',
       inputs: [
         { 
@@ -251,6 +252,7 @@ function App() {
       id: 'eomonth',
       title: 'Finance Dates (EOMONTH)',
       description: 'Calculates the specific date for the "End Of Month". Crucial for financial modeling, runway calculations, and billing cycles.',
+      explanation: "EOMONTH returns the date of the last day of the month which falls a specified number of months before or after a start date. It is essential for financial models where invoices are due at the end of the month. '0' means this month, '1' means next month.",
       tip: 'Use "0" to get the end of the current month. Use "1" for next month, "-1" for last month.',
       inputs: [
         { 
@@ -274,13 +276,11 @@ function App() {
   useEffect(() => {
     const handleScroll = () => {
       const scrollPosition = window.scrollY + 100;
-      // Add 'syntax' to the scroll spy
       const syntaxEl = document.getElementById('syntax-101');
       if (syntaxEl && syntaxEl.offsetTop <= scrollPosition && (syntaxEl.offsetTop + syntaxEl.offsetHeight) > scrollPosition) {
          setActiveSection('syntax-101');
          return;
       }
-
       for (const formula of formulas) {
         const element = document.getElementById(formula.id);
         if (element && element.offsetTop <= scrollPosition && (element.offsetTop + element.offsetHeight) > scrollPosition) {
@@ -307,7 +307,6 @@ function App() {
           </div>
         </div>
         <nav className="flex-1 overflow-y-auto p-6 space-y-1">
-          {/* New Syntax Link */}
           <a 
             href="#syntax-101" 
             className={`group flex items-center justify-between px-3 py-2 text-sm rounded-lg transition-all duration-200 mb-6 ${
@@ -400,7 +399,7 @@ function App() {
             </p>
           </div>
 
-          {/* NEW SYNTAX CHEAT SHEET */}
+          {/* SYNTAX CHEAT SHEET */}
           <section id="syntax-101" className="bg-blue-50 rounded-xl border border-blue-100 p-6 md:p-8 scroll-mt-32">
              <div className="flex items-center gap-3 mb-6">
                 <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center text-blue-600 shadow-sm">
@@ -439,6 +438,7 @@ function App() {
                 <FormulaBuilder 
                   title={formula.title}
                   description={formula.description}
+                  explanation={formula.explanation}
                   tip={formula.tip}
                   inputs={formula.inputs}
                   generator={formula.generator}
