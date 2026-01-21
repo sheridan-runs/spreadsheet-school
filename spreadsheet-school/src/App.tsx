@@ -7,16 +7,32 @@ function App() {
   const [activeSection, setActiveSection] = useState('');
 
   // --- SMART HELPERS ---
-  // Detects if input is text and needs quotes, or if it's a number/cell ref
+  
+  // 1. Handle Quotes for Text (e.g. Apple -> "Apple")
   const smartQuote = (val: string) => {
-    if (!val) return '""'; // Handle empty inputs
+    if (!val) return '""'; 
     const clean = val.trim();
-    // If it's a number, formula, or already quoted, leave it alone
     if (!isNaN(Number(clean)) || clean.startsWith('"') || clean.startsWith('=') || clean.match(/^[A-Z]+[0-9]+(:[A-Z]+[0-9]+)?$/)) {
       return clean;
     }
-    // Otherwise, assume it's text and wrap it
     return `"${clean}"`;
+  };
+
+  // 2. Handle Quotes for Sheet Ranges (e.g. Sheet1!A:A -> 'Sheet1'!A:A)
+  const smartRange = (val: string) => {
+    if (!val) return '';
+    // If there is no "!", it's just a regular range like A:C, leave it alone
+    if (!val.includes('!')) return val; 
+    
+    const parts = val.split('!');
+    const sheet = parts[0];
+    const range = parts.slice(1).join('!'); 
+
+    // If it is already quoted, leave it alone
+    if (sheet.trim().startsWith("'") && sheet.trim().endsWith("'")) return val;
+
+    // Otherwise, wrap the sheet name in single quotes
+    return `'${sheet}'!${range}`;
   };
 
   // --- DATA: The Top 10 Spreadsheet Functions ---
@@ -36,8 +52,8 @@ function App() {
         { 
           id: 'range', 
           label: 'The range to search inside', 
-          defaultValue: "'Sheet2'!A:C", 
-          placeholder: "e.g. 'Sheet2'!A:C" 
+          defaultValue: 'Sheet2!A:C',   // No quotes needed in default now
+          placeholder: 'Sheet2!A:C'     // Cleaner placeholder
         },
         { 
           id: 'index', 
@@ -46,7 +62,8 @@ function App() {
           placeholder: 'e.g. 2 (If data is in Col B)' 
         },
       ],
-      generator: (v: any) => `=VLOOKUP(${v.searchKey}, ${v.range}, ${v.index}, FALSE)`
+      // Apply smartRange here
+      generator: (v: any) => `=VLOOKUP(${v.searchKey}, ${smartRange(v.range)}, ${v.index}, FALSE)`
     },
     {
       id: 'if-logic',
@@ -73,7 +90,6 @@ function App() {
           placeholder: 'Review' 
         },
       ],
-      // Smart Quote logic applied here
       generator: (v: any) => `=IF(${v.condition}, ${smartQuote(v.trueVal)}, ${smartQuote(v.falseVal)})`
     },
     {
@@ -101,7 +117,8 @@ function App() {
           placeholder: 'Widgets' 
         },
       ],
-      generator: (v: any) => `=SUMIFS(${v.sumRange}, ${v.criteriaRange}, ${smartQuote(v.criterion)})`
+      // Applied smartRange to ranges just in case they reference other sheets
+      generator: (v: any) => `=SUMIFS(${smartRange(v.sumRange)}, ${smartRange(v.criteriaRange)}, ${smartQuote(v.criterion)})`
     },
     {
       id: 'filter',
@@ -128,8 +145,8 @@ function App() {
           placeholder: 'Completed' 
         },
       ],
-      // Logic: We write the "=" and the quotes for them
-      generator: (v: any) => `=FILTER(${v.range}, ${v.checkCol} = ${smartQuote(v.value)})`
+      // Applied smartRange here too
+      generator: (v: any) => `=FILTER(${smartRange(v.range)}, ${smartRange(v.checkCol)} = ${smartQuote(v.value)})`
     },
     {
       id: 'text-join',
@@ -150,8 +167,7 @@ function App() {
           placeholder: 'A2:A10' 
         },
       ],
-      // Strip existing quotes and add fresh ones to be safe
-      generator: (v: any) => `=TEXTJOIN("${v.delimiter.replace(/"/g, '')}", TRUE, ${v.range})`
+      generator: (v: any) => `=TEXTJOIN("${v.delimiter.replace(/"/g, '')}", TRUE, ${smartRange(v.range)})`
     },
     {
       id: 'unique',
@@ -166,7 +182,7 @@ function App() {
           placeholder: 'A2:A' 
         },
       ],
-      generator: (v: any) => `=UNIQUE(${v.range})`
+      generator: (v: any) => `=UNIQUE(${smartRange(v.range)})`
     },
     {
       id: 'trim',
@@ -202,7 +218,7 @@ function App() {
           placeholder: 'Sheet1!A:C' 
         },
       ],
-      // Logic: Ensure URL and Range are quoted
+      // IMPORTRANGE requires quotes around the string, so smartQuote handles the whole block
       generator: (v: any) => `=IMPORTRANGE(${smartQuote(v.url)}, ${smartQuote(v.range)})`
     },
     {
@@ -224,7 +240,6 @@ function App() {
           placeholder: 'e.g. Not Found' 
         },
       ],
-      // Logic: If blank, use "", otherwise quote the text
       generator: (v: any) => `=IFERROR(${v.formula}, ${v.value === '' ? '""' : smartQuote(v.value)})`
     },
     {
@@ -319,7 +334,7 @@ function App() {
            </button>
         </div>
 
-        {/* Mobile Menu Dropdown (Fixed Z-Index and Footer) */}
+        {/* Mobile Menu Dropdown */}
         {mobileMenuOpen && (
           <div className="md:hidden fixed inset-0 top-16 bg-white z-50 p-4 overflow-y-auto flex flex-col">
              <div className="flex-1">
@@ -335,7 +350,7 @@ function App() {
                ))}
              </div>
              
-             {/* Added Mobile Footer Link */}
+             {/* Mobile Footer Link */}
              <div className="pt-6 pb-12 border-t border-slate-100 mt-4">
                <a href="https://sheridanjamieson.com" target="_blank" className="text-sm text-slate-500 flex items-center gap-2 font-medium">
                  <Github size={16} /> Built by Sheridan Jamieson
