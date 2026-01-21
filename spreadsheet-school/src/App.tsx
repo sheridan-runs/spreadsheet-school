@@ -116,13 +116,20 @@ function App() {
           placeholder: 'A2:D100' 
         },
         { 
-          id: 'condition', 
-          label: 'The rule to filter by', 
-          defaultValue: 'B2:B100 = "Completed"', 
-          placeholder: 'B2:B100 = "Completed"' 
+          id: 'checkCol', 
+          label: 'Which column are we checking?', 
+          defaultValue: 'B2:B100', 
+          placeholder: 'B2:B100' 
+        },
+        { 
+          id: 'value', 
+          label: 'Value to match (e.g. Completed)', 
+          defaultValue: 'Completed', 
+          placeholder: 'Completed' 
         },
       ],
-      generator: (v: any) => `=FILTER(${v.range}, ${v.condition})`
+      // Logic: We write the "=" and the quotes for them
+      generator: (v: any) => `=FILTER(${v.range}, ${v.checkCol} = ${smartQuote(v.value)})`
     },
     {
       id: 'text-join',
