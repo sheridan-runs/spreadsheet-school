@@ -6,6 +6,19 @@ function App() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('');
 
+  // --- SMART HELPERS ---
+  // Detects if input is text and needs quotes, or if it's a number/cell ref
+  const smartQuote = (val: string) => {
+    if (!val) return '""'; // Handle empty inputs
+    const clean = val.trim();
+    // If it's a number, formula, or already quoted, leave it alone
+    if (!isNaN(Number(clean)) || clean.startsWith('"') || clean.startsWith('=') || clean.match(/^[A-Z]+[0-9]+(:[A-Z]+[0-9]+)?$/)) {
+      return clean;
+    }
+    // Otherwise, assume it's text and wrap it
+    return `"${clean}"`;
+  };
+
   // --- DATA: The Top 10 Spreadsheet Functions ---
   const formulas = [
     {
@@ -39,7 +52,7 @@ function App() {
       id: 'if-logic',
       title: 'Logic Rules (IF)',
       description: 'Allows your spreadsheet to make decisions. It checks if a statement is true or false, and returns a different result for each outcome.',
-      tip: 'Text results (like "Bonus") must be inside double quotes. Numbers do not need quotes.',
+      tip: 'We automatically add quotes for text results. Just type Bonus and we handle the rest.',
       inputs: [
         { 
           id: 'condition', 
@@ -50,17 +63,18 @@ function App() {
         { 
           id: 'trueVal', 
           label: 'Result if YES (True)', 
-          defaultValue: '"Bonus"', 
-          placeholder: '"Bonus"' 
+          defaultValue: 'Bonus', 
+          placeholder: 'Bonus' 
         },
         { 
           id: 'falseVal', 
           label: 'Result if NO (False)', 
-          defaultValue: '"Review"', 
-          placeholder: '"Review"' 
+          defaultValue: 'Review', 
+          placeholder: 'Review' 
         },
       ],
-      generator: (v: any) => `=IF(${v.condition}, ${v.trueVal}, ${v.falseVal})`
+      // Smart Quote logic applied here
+      generator: (v: any) => `=IF(${v.condition}, ${smartQuote(v.trueVal)}, ${smartQuote(v.falseVal)})`
     },
     {
       id: 'sumifs',
@@ -83,11 +97,11 @@ function App() {
         { 
           id: 'criterion', 
           label: 'What must it match?', 
-          defaultValue: '"Widgets"', 
-          placeholder: '"Widgets"' 
+          defaultValue: 'Widgets', 
+          placeholder: 'Widgets' 
         },
       ],
-      generator: (v: any) => `=SUMIFS(${v.sumRange}, ${v.criteriaRange}, ${v.criterion})`
+      generator: (v: any) => `=SUMIFS(${v.sumRange}, ${v.criteriaRange}, ${smartQuote(v.criterion)})`
     },
     {
       id: 'filter',
@@ -114,13 +128,13 @@ function App() {
       id: 'text-join',
       title: 'Combine Text (TEXTJOIN)',
       description: 'Merges text from multiple cells. Unlike CONCATENATE, this lets you pick a separator (like a comma) and ignores empty cells.',
-      tip: 'The delimiter (separator) must be inside quote marks. Use ", " for a comma and a space.',
+      tip: 'We automatically handle the separator quotes for you. Just type a comma.',
       inputs: [
         { 
           id: 'delimiter', 
           label: 'The Separator', 
-          defaultValue: '", "', 
-          placeholder: '", "' 
+          defaultValue: ', ', 
+          placeholder: ', ' 
         },
         { 
           id: 'range', 
@@ -129,7 +143,8 @@ function App() {
           placeholder: 'A2:A10' 
         },
       ],
-      generator: (v: any) => `=TEXTJOIN(${v.delimiter}, TRUE, ${v.range})`
+      // Strip existing quotes and add fresh ones to be safe
+      generator: (v: any) => `=TEXTJOIN("${v.delimiter.replace(/"/g, '')}", TRUE, ${v.range})`
     },
     {
       id: 'unique',
@@ -170,23 +185,24 @@ function App() {
         { 
           id: 'url', 
           label: 'The URL of the OTHER sheet', 
-          defaultValue: '"https://docs.google.com..."', 
-          placeholder: '"https://docs.google.com..."' 
+          defaultValue: 'https://docs.google.com...', 
+          placeholder: 'Paste full URL...' 
         },
         { 
           id: 'range', 
           label: 'The tab and range to grab', 
-          defaultValue: '"Sheet1!A:C"', 
-          placeholder: '"Sheet1!A:C"' 
+          defaultValue: 'Sheet1!A:C', 
+          placeholder: 'Sheet1!A:C' 
         },
       ],
-      generator: (v: any) => `=IMPORTRANGE(${v.url}, ${v.range})`
+      // Logic: Ensure URL and Range are quoted
+      generator: (v: any) => `=IMPORTRANGE(${smartQuote(v.url)}, ${smartQuote(v.range)})`
     },
     {
       id: 'iferror',
       title: 'Hide Errors (IFERROR)',
       description: 'Wraps around any formula to catch ugly errors like #N/A or #DIV/0! and replace them with something cleaner (or nothing at all).',
-      tip: 'To leave the cell blank if there is an error, just use double quotes "" as the second value.',
+      tip: 'Leave the "What to show" box blank to simply show an empty cell if an error occurs.',
       inputs: [
         { 
           id: 'formula', 
@@ -196,12 +212,13 @@ function App() {
         },
         { 
           id: 'value', 
-          label: 'What to show instead', 
-          defaultValue: '""', 
-          placeholder: '"Not Found" or ""' 
+          label: 'What to show instead (Leave blank for empty)', 
+          defaultValue: '', 
+          placeholder: 'e.g. Not Found' 
         },
       ],
-      generator: (v: any) => `=IFERROR(${v.formula}, ${v.value})`
+      // Logic: If blank, use "", otherwise quote the text
+      generator: (v: any) => `=IFERROR(${v.formula}, ${v.value === '' ? '""' : smartQuote(v.value)})`
     },
     {
       id: 'eomonth',
@@ -229,10 +246,7 @@ function App() {
   // --- SCROLL SPY LOGIC ---
   useEffect(() => {
     const handleScroll = () => {
-      // 100px offset to trigger the highlight slightly before the element hits the very top
       const scrollPosition = window.scrollY + 100;
-      
-      // Find the active section
       for (const formula of formulas) {
         const element = document.getElementById(formula.id);
         if (element && element.offsetTop <= scrollPosition && (element.offsetTop + element.offsetHeight) > scrollPosition) {
@@ -240,7 +254,6 @@ function App() {
         }
       }
     };
-
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, [formulas]);
@@ -248,7 +261,7 @@ function App() {
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-slate-900 flex">
       
-      {/* SIDEBAR NAVIGATION */}
+      {/* SIDEBAR NAVIGATION (Desktop) */}
       <aside className="hidden md:flex w-72 flex-col fixed inset-y-0 border-r border-slate-200 bg-white z-10">
         <div className="p-6 border-b border-slate-100 flex items-center gap-3">
           <div className="w-10 h-10 bg-sheet-green rounded-lg flex items-center justify-center text-white shadow-sm shadow-green-200">
@@ -288,7 +301,8 @@ function App() {
 
       {/* MAIN CONTENT */}
       <main className="flex-1 md:ml-72 relative">
-        <div className="md:hidden flex items-center justify-between p-4 bg-white border-b border-slate-200 sticky top-0 z-20 shadow-sm">
+        {/* Mobile Header */}
+        <div className="md:hidden flex items-center justify-between p-4 bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm">
            <div className="flex items-center gap-2 font-bold text-lg">
               <div className="w-8 h-8 bg-sheet-green rounded flex items-center justify-center text-white"><FileSpreadsheet size={16}/></div>
               Spreadsheet School
@@ -298,18 +312,28 @@ function App() {
            </button>
         </div>
 
+        {/* Mobile Menu Dropdown (Fixed Z-Index and Footer) */}
         {mobileMenuOpen && (
-          <div className="md:hidden fixed inset-0 top-16 bg-white z-10 p-4 overflow-y-auto">
-             {formulas.map(f => (
-              <a 
-                key={f.id} 
-                href={`#${f.id}`} 
-                onClick={() => setMobileMenuOpen(false)}
-                className="block px-4 py-4 border-b border-slate-100 text-slate-800 font-bold"
-              >
-                {f.title}
-              </a>
-             ))}
+          <div className="md:hidden fixed inset-0 top-16 bg-white z-50 p-4 overflow-y-auto flex flex-col">
+             <div className="flex-1">
+               {formulas.map(f => (
+                <a 
+                  key={f.id} 
+                  href={`#${f.id}`} 
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="block px-4 py-4 border-b border-slate-100 text-slate-800 font-bold"
+                >
+                  {f.title}
+                </a>
+               ))}
+             </div>
+             
+             {/* Added Mobile Footer Link */}
+             <div className="pt-6 pb-12 border-t border-slate-100 mt-4">
+               <a href="https://sheridanjamieson.com" target="_blank" className="text-sm text-slate-500 flex items-center gap-2 font-medium">
+                 <Github size={16} /> Built by Sheridan Jamieson
+               </a>
+             </div>
           </div>
         )}
 
