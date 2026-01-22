@@ -339,11 +339,17 @@ function App() {
         </nav>
         
         <div className="p-6 border-t border-slate-100">
-           <a href="https://sheridanjamieson.com" target="_blank" className="text-xs text-slate-500 hover:text-sheet-green flex items-center gap-2 font-medium transition-colors">
-             <Github size={14} /> Built by Sheridan Jamieson
-           </a>
-        </div>
-      </aside>
+  {/* UPDATED: Added 'rel="me noopener noreferrer"' */}
+  <a 
+    href="https://sheridanjamieson.com" 
+    target="_blank" 
+    rel="me noopener noreferrer"
+    className="text-xs text-slate-500 hover:text-sheet-green flex items-center gap-2 font-medium transition-colors"
+  >
+    <Github size={14} /> Built by Sheridan Jamieson
+  </a>
+</div>
+</aside>
 
       {/* MAIN CONTENT */}
       <main className="flex-1 md:ml-72 relative">
