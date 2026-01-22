@@ -1,6 +1,8 @@
 import { FileSpreadsheet, Menu, X, Github, ChevronRight, ArrowUpRight, Info, BookOpen } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { FormulaBuilder } from './components/FormulaBuilder';
+// 1. IMPORT THE NEW COMPONENT
+import { FormulaChecker } from './components/FormulaChecker';
 
 function App() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -278,8 +280,8 @@ function App() {
       const scrollPosition = window.scrollY + 100;
       const syntaxEl = document.getElementById('syntax-101');
       if (syntaxEl && syntaxEl.offsetTop <= scrollPosition && (syntaxEl.offsetTop + syntaxEl.offsetHeight) > scrollPosition) {
-         setActiveSection('syntax-101');
-         return;
+          setActiveSection('syntax-101');
+          return;
       }
       for (const formula of formulas) {
         const element = document.getElementById(formula.id);
@@ -365,31 +367,31 @@ function App() {
 
         {mobileMenuOpen && (
           <div className="md:hidden fixed inset-0 top-16 bg-white z-50 p-4 overflow-y-auto flex flex-col">
-             <div className="flex-1">
-               <a 
-                 href="#syntax-101" 
-                 onClick={() => setMobileMenuOpen(false)}
-                 className="block px-4 py-4 border-b border-slate-100 text-blue-600 font-bold flex items-center gap-2"
-               >
-                 <BookOpen size={18}/> Syntax 101
-               </a>
-               {formulas.map(f => (
+              <div className="flex-1">
                 <a 
-                  key={f.id} 
-                  href={`#${f.id}`} 
+                  href="#syntax-101" 
                   onClick={() => setMobileMenuOpen(false)}
-                  className="block px-4 py-4 border-b border-slate-100 text-slate-800 font-bold"
+                  className="block px-4 py-4 border-b border-slate-100 text-blue-600 font-bold flex items-center gap-2"
                 >
-                  {f.title}
+                  <BookOpen size={18}/> Syntax 101
                 </a>
-               ))}
-             </div>
-             
-             <div className="pt-6 pb-12 border-t border-slate-100 mt-4">
-               <a href="https://sheridanjamieson.com" target="_blank" className="text-sm text-slate-500 flex items-center gap-2 font-medium">
-                 <Github size={16} /> Built by Sheridan Jamieson
-               </a>
-             </div>
+                {formulas.map(f => (
+                 <a 
+                   key={f.id} 
+                   href={`#${f.id}`} 
+                   onClick={() => setMobileMenuOpen(false)}
+                   className="block px-4 py-4 border-b border-slate-100 text-slate-800 font-bold"
+                 >
+                   {f.title}
+                 </a>
+                ))}
+              </div>
+              
+              <div className="pt-6 pb-12 border-t border-slate-100 mt-4">
+                <a href="https://sheridanjamieson.com" target="_blank" className="text-sm text-slate-500 flex items-center gap-2 font-medium">
+                  <Github size={16} /> Built by Sheridan Jamieson
+                </a>
+              </div>
           </div>
         )}
 
@@ -407,34 +409,34 @@ function App() {
 
           {/* SYNTAX CHEAT SHEET */}
           <section id="syntax-101" className="bg-blue-50 rounded-xl border border-blue-100 p-6 md:p-8 scroll-mt-32">
-             <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center text-blue-600 shadow-sm">
-                   <Info size={20} />
-                </div>
-                <h3 className="text-xl font-bold text-slate-900">Syntax Cheat Sheet</h3>
-             </div>
-             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
-                <div className="space-y-1">
-                   <div className="text-xs font-bold text-slate-400 uppercase tracking-widest">Ranges</div>
-                   <div className="font-mono text-sm bg-white px-2 py-1 rounded border border-blue-100 inline-block text-slate-700">A:C</div>
-                   <p className="text-sm text-slate-600 leading-relaxed">Use a <strong>colon (:)</strong> to select everything between two points. <br/><em>"Column A to C"</em></p>
-                </div>
-                <div className="space-y-1">
-                   <div className="text-xs font-bold text-slate-400 uppercase tracking-widest">Sheets</div>
-                   <div className="font-mono text-sm bg-white px-2 py-1 rounded border border-blue-100 inline-block text-slate-700">Sheet1!A1</div>
-                   <p className="text-sm text-slate-600 leading-relaxed">Use an <strong>exclamation (!)</strong> to separate the Sheet Name from the cell.</p>
-                </div>
-                <div className="space-y-1">
-                   <div className="text-xs font-bold text-slate-400 uppercase tracking-widest">Logic</div>
-                   <div className="font-mono text-sm bg-white px-2 py-1 rounded border border-blue-100 inline-block text-slate-700">&gt; &lt; &lt;&gt;</div>
-                   <p className="text-sm text-slate-600 leading-relaxed"><strong>&gt;</strong> (Greater than), <strong>&lt;</strong> (Less than), and <strong>&lt;&gt;</strong> (Not Equal).</p>
-                </div>
-                <div className="space-y-1">
-                   <div className="text-xs font-bold text-slate-400 uppercase tracking-widest">Text</div>
-                   <div className="font-mono text-sm bg-white px-2 py-1 rounded border border-blue-100 inline-block text-slate-700">"Done"</div>
-                   <p className="text-sm text-slate-600 leading-relaxed">Always wrap text inside <strong>double quotes</strong>.</p>
-                </div>
-             </div>
+              <div className="flex items-center gap-3 mb-6">
+                 <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center text-blue-600 shadow-sm">
+                    <Info size={20} />
+                 </div>
+                 <h3 className="text-xl font-bold text-slate-900">Syntax Cheat Sheet</h3>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+                 <div className="space-y-1">
+                    <div className="text-xs font-bold text-slate-400 uppercase tracking-widest">Ranges</div>
+                    <div className="font-mono text-sm bg-white px-2 py-1 rounded border border-blue-100 inline-block text-slate-700">A:C</div>
+                    <p className="text-sm text-slate-600 leading-relaxed">Use a <strong>colon (:)</strong> to select everything between two points. <br/><em>"Column A to C"</em></p>
+                 </div>
+                 <div className="space-y-1">
+                    <div className="text-xs font-bold text-slate-400 uppercase tracking-widest">Sheets</div>
+                    <div className="font-mono text-sm bg-white px-2 py-1 rounded border border-blue-100 inline-block text-slate-700">Sheet1!A1</div>
+                    <p className="text-sm text-slate-600 leading-relaxed">Use an <strong>exclamation (!)</strong> to separate the Sheet Name from the cell.</p>
+                 </div>
+                 <div className="space-y-1">
+                    <div className="text-xs font-bold text-slate-400 uppercase tracking-widest">Logic</div>
+                    <div className="font-mono text-sm bg-white px-2 py-1 rounded border border-blue-100 inline-block text-slate-700">&gt; &lt; &lt;&gt;</div>
+                    <p className="text-sm text-slate-600 leading-relaxed"><strong>&gt;</strong> (Greater than), <strong>&lt;</strong> (Less than), and <strong>&lt;&gt;</strong> (Not Equal).</p>
+                 </div>
+                 <div className="space-y-1">
+                    <div className="text-xs font-bold text-slate-400 uppercase tracking-widest">Text</div>
+                    <div className="font-mono text-sm bg-white px-2 py-1 rounded border border-blue-100 inline-block text-slate-700">"Done"</div>
+                    <p className="text-sm text-slate-600 leading-relaxed">Always wrap text inside <strong>double quotes</strong>.</p>
+                 </div>
+              </div>
           </section>
 
           {/* THE FEED */}
@@ -449,22 +451,30 @@ function App() {
                   inputs={formula.inputs}
                   generator={formula.generator}
                 />
+                
+                {/* 2. NEW: CONDITIONALLY RENDER THE FORMULA DOCTOR HERE */}
+                {formula.id === 'if-logic' && (
+                  <div className="mt-8">
+                    <FormulaChecker />
+                  </div>
+                )}
+                
               </section>
             ))}
           </div>
 
           {/* Nurture Call to Action */}
           <section className="bg-slate-900 rounded-2xl p-8 md:p-12 text-center space-y-6 shadow-xl">
-             <div className="inline-block px-3 py-1 rounded-full bg-slate-800 text-sheet-green text-xs font-bold uppercase tracking-widest border border-slate-700">
+              <div className="inline-block px-3 py-1 rounded-full bg-slate-800 text-sheet-green text-xs font-bold uppercase tracking-widest border border-slate-700">
                 Beyond the basics
-             </div>
-             <h2 className="text-2xl md:text-3xl font-bold text-white">Need more than a cheat sheet?</h2>
-             <p className="text-slate-400 max-w-xl mx-auto text-lg">
+              </div>
+              <h2 className="text-2xl md:text-3xl font-bold text-white">Need more than a cheat sheet?</h2>
+              <p className="text-slate-400 max-w-xl mx-auto text-lg">
                 If your spreadsheet problems can't be fixed with a VLOOKUP, you might need a CFO. We build custom financial models and dashboards for founders.
-             </p>
-             <a href="https://nurture.kiwi" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 bg-sheet-green hover:bg-emerald-500 text-white font-bold px-8 py-4 rounded-xl transition-all hover:scale-105 shadow-lg shadow-green-900/20">
+              </p>
+              <a href="https://nurture.kiwi" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 bg-sheet-green hover:bg-emerald-500 text-white font-bold px-8 py-4 rounded-xl transition-all hover:scale-105 shadow-lg shadow-green-900/20">
                 Work with Nurture <ArrowUpRight size={18} />
-             </a>
+              </a>
           </section>
           
           <footer className="pt-16 pb-8 border-t border-slate-200">
