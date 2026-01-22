@@ -297,31 +297,33 @@ function App() {
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-slate-900 flex">
       
-      {/* SIDEBAR NAVIGATION */}
-      <aside className="hidden md:flex w-72 flex-col fixed inset-y-0 border-r border-slate-200 bg-white z-10">
-        <div className="p-6 border-b border-slate-100 flex items-center gap-3">
-          <div className="w-10 h-10 bg-sheet-green rounded-lg flex items-center justify-center text-white shadow-sm shadow-green-200">
-            <FileSpreadsheet size={22} />
-          </div>
-          <div className="leading-tight">
-            <span className="font-bold tracking-tight text-lg block">Spreadsheet</span>
-            <span className="font-bold tracking-tight text-lg text-slate-400">School</span>
-          </div>
-        </div>
-        <nav className="flex-1 overflow-y-auto p-6 space-y-1">
-          <a 
-            href="#syntax-101" 
-            className={`group flex items-center justify-between px-3 py-2 text-sm rounded-lg transition-all duration-200 mb-6 ${
-              activeSection === 'syntax-101' 
-                ? 'bg-blue-50 text-blue-600 font-bold shadow-sm' 
-                : 'text-slate-600 hover:text-blue-600 hover:bg-blue-50'
-            }`}
-          >
-            <span className="flex items-center gap-2"><BookOpen size={16}/> Syntax 101</span>
-            {activeSection === 'syntax-101' && <ChevronRight size={14} />}
-          </a>
+      {/* Inside the Sidebar <nav> */}
 
-          <p className="px-2 text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Core Functions</p>
+<a 
+  href="#syntax-101" 
+  /* ... existing syntax link props ... */
+>
+  <span className="flex items-center gap-2"><BookOpen size={16}/> Syntax 101</span>
+  {activeSection === 'syntax-101' && <ChevronRight size={14} />}
+</a>
+
+{/* --- NEW: FORMULA DOCTOR LINK --- */}
+<a 
+  href="#formula-doctor" 
+  className={`group flex items-center justify-between px-3 py-2 text-sm rounded-lg transition-all duration-200 mb-6 ${
+    activeSection === 'formula-doctor' 
+      ? 'bg-purple-50 text-purple-600 font-bold shadow-sm' 
+      : 'text-slate-600 hover:text-purple-600 hover:bg-purple-50'
+  }`}
+>
+  <span className="flex items-center gap-2">
+    {/* You'll need to import Wand2 from lucide-react */}
+    <Wand2 size={16} /> Debug Formulas
+  </span>
+  {activeSection === 'formula-doctor' && <ChevronRight size={14} />}
+</a>
+
+<p className="px-2 text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Core Functions</p>
           {formulas.map(f => (
             <a 
               key={f.id} 
