@@ -1,7 +1,6 @@
-import { FileSpreadsheet, Menu, X, Github, ChevronRight, ArrowUpRight, Info, BookOpen } from 'lucide-react';
+import { FileSpreadsheet, Menu, X, Github, ChevronRight, ArrowUpRight, Info, BookOpen, Wand2 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { FormulaBuilder } from './components/FormulaBuilder';
-// 1. IMPORT THE NEW COMPONENT
 import { FormulaChecker } from './components/FormulaChecker';
 
 function App() {
@@ -37,34 +36,18 @@ function App() {
     return clean;
   };
 
-  // --- DATA WITH SEO EXPLANATIONS ---
+  // --- DATA ---
   const formulas = [
     {
       id: 'vlookup',
       title: 'Connect Data (VLOOKUP)',
       description: 'The standard way to merge data. Use this when you have two separate lists (e.g., a "Sales" list and a "Product" list) and you need to pull information from one to the other.',
-      // SEO OPTIMISED
       explanation: "VLOOKUP stands for Vertical Lookup. It searches for a specific value in the first column of a dataset and returns a value in the same row from a specified column. Think of it like a restaurant menu: You look down the list for the 'Dish Name' (Search Key), and then look across to find the 'Price' (Result).",
       tip: 'Remember to check the Syntax 101 above if your sheet references aren\'t working!',
       inputs: [
-        { 
-          id: 'searchKey', 
-          label: 'The Search Key', 
-          defaultValue: 'G3', 
-          placeholder: 'e.g. A2' 
-        },
-        { 
-          id: 'range', 
-          label: 'The range to search inside', 
-          defaultValue: 'Sheet2!A:C', 
-          placeholder: 'Sheet2!A:C' 
-        },
-        { 
-          id: 'index', 
-          label: 'Which column number has the result?', 
-          defaultValue: '3', 
-          placeholder: 'e.g. 2 (If data is in Col B)' 
-        },
+        { id: 'searchKey', label: 'The Search Key', defaultValue: 'G3', placeholder: 'e.g. A2' },
+        { id: 'range', label: 'The range to search inside', defaultValue: 'Sheet2!A:C', placeholder: 'Sheet2!A:C' },
+        { id: 'index', label: 'Which column number has the result?', defaultValue: '3', placeholder: 'e.g. 2 (If data is in Col B)' },
       ],
       generator: (v: any) => `=VLOOKUP(${v.searchKey}, ${smartRange(v.range)}, ${v.index}, FALSE)`
     },
@@ -75,24 +58,9 @@ function App() {
       explanation: "The IF function runs a logical test to see if a specific condition is met. If the condition is true, it returns one value; if false, it returns another. Think of it like a bouncer at a club: 'IF you are over 18, come in (True); otherwise, go home (False).'",
       tip: 'We automatically add quotes for text results. Just type Bonus and we handle the rest.',
       inputs: [
-        { 
-          id: 'condition', 
-          label: 'The Logical Test', 
-          defaultValue: 'B2 > 1000', 
-          placeholder: 'e.g. B2 > 1000' 
-        },
-        { 
-          id: 'trueVal', 
-          label: 'Result if YES (True)', 
-          defaultValue: 'Bonus', 
-          placeholder: 'Bonus' 
-        },
-        { 
-          id: 'falseVal', 
-          label: 'Result if NO (False)', 
-          defaultValue: 'Review', 
-          placeholder: 'Review' 
-        },
+        { id: 'condition', label: 'The Logical Test', defaultValue: 'B2 > 1000', placeholder: 'e.g. B2 > 1000' },
+        { id: 'trueVal', label: 'Result if YES (True)', defaultValue: 'Bonus', placeholder: 'Bonus' },
+        { id: 'falseVal', label: 'Result if NO (False)', defaultValue: 'Review', placeholder: 'Review' },
       ],
       generator: (v: any) => `=IF(${v.condition}, ${smartQuote(v.trueVal)}, ${smartQuote(v.falseVal)})`
     },
@@ -103,24 +71,9 @@ function App() {
       explanation: "SUMIFS adds numerical values based on multiple criteria. Unlike a simple SUM, it filters the data before adding it. Think of it like calculating your grocery bill but asking: 'What is the total cost ONLY for items that are Fruit?'",
       tip: 'The column you want to add up (Sum Range) always comes FIRST in this formula.',
       inputs: [
-        { 
-          id: 'sumRange', 
-          label: 'Which column contains the numbers to add?', 
-          defaultValue: 'C:C', 
-          placeholder: 'e.g. C:C (Revenue)' 
-        },
-        { 
-          id: 'criteriaRange', 
-          label: 'Which column are we checking?', 
-          defaultValue: 'A:A', 
-          placeholder: 'e.g. A:A (Product Names)' 
-        },
-        { 
-          id: 'criterion', 
-          label: 'What must it match?', 
-          defaultValue: 'Widgets', 
-          placeholder: 'Widgets' 
-        },
+        { id: 'sumRange', label: 'Which column contains the numbers to add?', defaultValue: 'C:C', placeholder: 'e.g. C:C (Revenue)' },
+        { id: 'criteriaRange', label: 'Which column are we checking?', defaultValue: 'A:A', placeholder: 'e.g. A:A (Product Names)' },
+        { id: 'criterion', label: 'What must it match?', defaultValue: 'Widgets', placeholder: 'Widgets' },
       ],
       generator: (v: any) => `=SUMIFS(${smartRange(v.sumRange)}, ${smartRange(v.criteriaRange)}, ${smartQuote(v.criterion)})`
     },
@@ -131,24 +84,9 @@ function App() {
       explanation: "The FILTER function extracts a list of values that meet specific criteria. Unlike VLOOKUP, which only finds the first match, FILTER returns every single match. Think of it like a sieve: You pour all your data in, and only the 'Gold Nuggets' (matches) stay.",
       tip: 'This is an "Array Formula", meaning it will spill results into multiple cells. Make sure there is empty space below it!',
       inputs: [
-        { 
-          id: 'range', 
-          label: 'The full list you want to filter', 
-          defaultValue: 'A2:D100', 
-          placeholder: 'A2:D100' 
-        },
-        { 
-          id: 'checkCol', 
-          label: 'Which column are we checking?', 
-          defaultValue: 'B2:B100', 
-          placeholder: 'B2:B100' 
-        },
-        { 
-          id: 'value', 
-          label: 'Value to match (e.g. Completed)', 
-          defaultValue: 'Completed', 
-          placeholder: 'Completed' 
-        },
+        { id: 'range', label: 'The full list you want to filter', defaultValue: 'A2:D100', placeholder: 'A2:D100' },
+        { id: 'checkCol', label: 'Which column are we checking?', defaultValue: 'B2:B100', placeholder: 'B2:B100' },
+        { id: 'value', label: 'Value to match (e.g. Completed)', defaultValue: 'Completed', placeholder: 'Completed' },
       ],
       generator: (v: any) => `=FILTER(${smartRange(v.range)}, ${smartRange(v.checkCol)} = ${smartQuote(v.value)})`
     },
@@ -159,18 +97,8 @@ function App() {
       explanation: "TEXTJOIN combines text from multiple strings or ranges, separating them with a specified delimiter (like a comma). It is smarter than CONCATENATE because it can automatically ignore empty cells. Great for creating comma-separated lists from a column of names.",
       tip: 'We automatically handle the separator quotes for you. Just type a comma.',
       inputs: [
-        { 
-          id: 'delimiter', 
-          label: 'The Separator', 
-          defaultValue: ', ', 
-          placeholder: ', ' 
-        },
-        { 
-          id: 'range', 
-          label: 'The cells to combine', 
-          defaultValue: 'A2:A10', 
-          placeholder: 'A2:A10' 
-        },
+        { id: 'delimiter', label: 'The Separator', defaultValue: ', ', placeholder: ', ' },
+        { id: 'range', label: 'The cells to combine', defaultValue: 'A2:A10', placeholder: 'A2:A10' },
       ],
       generator: (v: any) => `=TEXTJOIN("${v.delimiter.replace(/"/g, '')}", TRUE, ${smartRange(v.range)})`
     },
@@ -181,12 +109,7 @@ function App() {
       explanation: "The UNIQUE function scans a list or range and returns a new list containing every value exactly once. It effectively removes all duplicates. Think of it like taking a roll call where you only write down each person's name the first time you hear it.",
       tip: 'Combine this with SORT to get a perfectly organized list: =SORT(UNIQUE(A:A))',
       inputs: [
-        { 
-          id: 'range', 
-          label: 'The column with duplicates', 
-          defaultValue: 'A2:A', 
-          placeholder: 'A2:A' 
-        },
+        { id: 'range', label: 'The column with duplicates', defaultValue: 'A2:A', placeholder: 'A2:A' },
       ],
       generator: (v: any) => `=UNIQUE(${smartRange(v.range)})`
     },
@@ -197,12 +120,7 @@ function App() {
       explanation: "TRIM removes all extra spaces from text, leaving only single spaces between words. It strips leading and trailing whitespace that often causes errors in formulas like VLOOKUP. It turns '  Apple  ' into 'Apple'.",
       tip: 'If your VLOOKUP is failing but the data looks correct, try wrapping it in TRIM(). " Space " is not the same as "Space".',
       inputs: [
-        { 
-          id: 'text', 
-          label: 'The cell with messy text', 
-          defaultValue: 'A2', 
-          placeholder: 'A2' 
-        },
+        { id: 'text', label: 'The cell with messy text', defaultValue: 'A2', placeholder: 'A2' },
       ],
       generator: (v: any) => `=TRIM(${v.text})`
     },
@@ -213,18 +131,8 @@ function App() {
       explanation: "IMPORTRANGE allows you to import a range of cells from one Google Sheets spreadsheet into another. It creates a live link between files. Think of it like a tunnel connecting two different buildings, allowing data to flow from one to the other.",
       tip: 'The first time you use this, you will see a #REF! error. Hover over the cell and click "Allow Access" to connect the sheets.',
       inputs: [
-        { 
-          id: 'url', 
-          label: 'The URL of the OTHER sheet', 
-          defaultValue: 'https://docs.google.com...', 
-          placeholder: 'Paste full URL...' 
-        },
-        { 
-          id: 'range', 
-          label: 'The tab and range to grab', 
-          defaultValue: 'Sheet1!A:C', 
-          placeholder: 'Sheet1!A:C' 
-        },
+        { id: 'url', label: 'The URL of the OTHER sheet', defaultValue: 'https://docs.google.com...', placeholder: 'Paste full URL...' },
+        { id: 'range', label: 'The tab and range to grab', defaultValue: 'Sheet1!A:C', placeholder: 'Sheet1!A:C' },
       ],
       generator: (v: any) => `=IMPORTRANGE(${smartQuote(v.url)}, ${smartQuote(v.range)})`
     },
@@ -235,18 +143,8 @@ function App() {
       explanation: "IFERROR checks if a formula results in an error (like #N/A or #DIV/0!). If an error is found, it returns a custom value (like 'Not Found' or a blank cell) instead of the scary error code. It acts like a safety net for your formulas.",
       tip: 'Leave the "What to show" box blank to simply show an empty cell if an error occurs.',
       inputs: [
-        { 
-          id: 'formula', 
-          label: 'Your existing formula', 
-          defaultValue: 'VLOOKUP(A2, B:C, 2, FALSE)', 
-          placeholder: 'Your Formula...' 
-        },
-        { 
-          id: 'value', 
-          label: 'What to show instead (Leave blank for empty)', 
-          defaultValue: '', 
-          placeholder: 'e.g. Not Found' 
-        },
+        { id: 'formula', label: 'Your existing formula', defaultValue: 'VLOOKUP(A2, B:C, 2, FALSE)', placeholder: 'Your Formula...' },
+        { id: 'value', label: 'What to show instead (Leave blank for empty)', defaultValue: '', placeholder: 'e.g. Not Found' },
       ],
       generator: (v: any) => `=IFERROR(${v.formula}, ${v.value === '' ? '""' : smartQuote(v.value)})`
     },
@@ -257,18 +155,8 @@ function App() {
       explanation: "EOMONTH returns the date of the last day of the month which falls a specified number of months before or after a start date. It is essential for financial models where invoices are due at the end of the month. '0' means this month, '1' means next month.",
       tip: 'Use "0" to get the end of the current month. Use "1" for next month, "-1" for last month.',
       inputs: [
-        { 
-          id: 'date', 
-          label: 'The starting date cell', 
-          defaultValue: 'A2', 
-          placeholder: 'A2' 
-        },
-        { 
-          id: 'months', 
-          label: 'How many months forward/back?', 
-          defaultValue: '1', 
-          placeholder: '1' 
-        },
+        { id: 'date', label: 'The starting date cell', defaultValue: 'A2', placeholder: 'A2' },
+        { id: 'months', label: 'How many months forward/back?', defaultValue: '1', placeholder: '1' },
       ],
       generator: (v: any) => `=EOMONTH(${v.date}, ${v.months})`
     }
@@ -278,11 +166,22 @@ function App() {
   useEffect(() => {
     const handleScroll = () => {
       const scrollPosition = window.scrollY + 100;
+      
+      // Check Syntax
       const syntaxEl = document.getElementById('syntax-101');
       if (syntaxEl && syntaxEl.offsetTop <= scrollPosition && (syntaxEl.offsetTop + syntaxEl.offsetHeight) > scrollPosition) {
           setActiveSection('syntax-101');
           return;
       }
+
+      // Check Formula Doctor
+      const doctorEl = document.getElementById('formula-doctor');
+      if (doctorEl && doctorEl.offsetTop <= scrollPosition && (doctorEl.offsetTop + doctorEl.offsetHeight) > scrollPosition) {
+          setActiveSection('formula-doctor');
+          return;
+      }
+
+      // Check Formulas
       for (const formula of formulas) {
         const element = document.getElementById(formula.id);
         if (element && element.offsetTop <= scrollPosition && (element.offsetTop + element.offsetHeight) > scrollPosition) {
@@ -297,33 +196,49 @@ function App() {
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-slate-900 flex">
       
-      {/* Inside the Sidebar <nav> */}
+      {/* SIDEBAR NAVIGATION - FIXED STRUCTURE */}
+      <aside className="hidden md:flex w-72 flex-col fixed inset-y-0 border-r border-slate-200 bg-white z-10">
+        {/* Logo Section */}
+        <div className="p-6 border-b border-slate-100 flex items-center gap-3">
+          <div className="w-10 h-10 bg-sheet-green rounded-lg flex items-center justify-center text-white shadow-sm shadow-green-200">
+            <FileSpreadsheet size={22} />
+          </div>
+          <div className="leading-tight">
+            <span className="font-bold tracking-tight text-lg block">Spreadsheet</span>
+            <span className="font-bold tracking-tight text-lg text-slate-400">School</span>
+          </div>
+        </div>
 
-<a 
-  href="#syntax-101" 
-  /* ... existing syntax link props ... */
->
-  <span className="flex items-center gap-2"><BookOpen size={16}/> Syntax 101</span>
-  {activeSection === 'syntax-101' && <ChevronRight size={14} />}
-</a>
+        {/* Navigation Links */}
+        <nav className="flex-1 overflow-y-auto p-6 space-y-1">
+          {/* Syntax 101 */}
+          <a 
+            href="#syntax-101" 
+            className={`group flex items-center justify-between px-3 py-2 text-sm rounded-lg transition-all duration-200 mb-1 ${
+              activeSection === 'syntax-101' 
+                ? 'bg-blue-50 text-blue-600 font-bold shadow-sm' 
+                : 'text-slate-600 hover:text-blue-600 hover:bg-blue-50'
+            }`}
+          >
+            <span className="flex items-center gap-2"><BookOpen size={16}/> Syntax 101</span>
+            {activeSection === 'syntax-101' && <ChevronRight size={14} />}
+          </a>
 
-{/* --- NEW: FORMULA DOCTOR LINK --- */}
-<a 
-  href="#formula-doctor" 
-  className={`group flex items-center justify-between px-3 py-2 text-sm rounded-lg transition-all duration-200 mb-6 ${
-    activeSection === 'formula-doctor' 
-      ? 'bg-purple-50 text-purple-600 font-bold shadow-sm' 
-      : 'text-slate-600 hover:text-purple-600 hover:bg-purple-50'
-  }`}
->
-  <span className="flex items-center gap-2">
-    {/* You'll need to import Wand2 from lucide-react */}
-    <Wand2 size={16} /> Debug Formulas
-  </span>
-  {activeSection === 'formula-doctor' && <ChevronRight size={14} />}
-</a>
+          {/* NEW: Formula Doctor Link */}
+          <a 
+            href="#formula-doctor" 
+            className={`group flex items-center justify-between px-3 py-2 text-sm rounded-lg transition-all duration-200 mb-6 ${
+              activeSection === 'formula-doctor' 
+                ? 'bg-purple-50 text-purple-600 font-bold shadow-sm' 
+                : 'text-slate-600 hover:text-purple-600 hover:bg-purple-50'
+            }`}
+          >
+            <span className="flex items-center gap-2"><Wand2 size={16}/> Debug Formulas</span>
+            {activeSection === 'formula-doctor' && <ChevronRight size={14} />}
+          </a>
 
-<p className="px-2 text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Core Functions</p>
+          <p className="px-2 text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Core Functions</p>
+          
           {formulas.map(f => (
             <a 
               key={f.id} 
@@ -342,18 +257,18 @@ function App() {
           ))}
         </nav>
         
+        {/* Footer Link */}
         <div className="p-6 border-t border-slate-100">
-  {/* UPDATED: Added 'rel="me noopener noreferrer"' */}
-  <a 
-    href="https://sheridanjamieson.com" 
-    target="_blank" 
-    rel="me noopener noreferrer"
-    className="text-xs text-slate-500 hover:text-sheet-green flex items-center gap-2 font-medium transition-colors"
-  >
-    <Github size={14} /> Built by Sheridan Jamieson
-  </a>
-</div>
-</aside>
+          <a 
+            href="https://sheridanjamieson.com" 
+            target="_blank" 
+            rel="me noopener noreferrer"
+            className="text-xs text-slate-500 hover:text-sheet-green flex items-center gap-2 font-medium transition-colors"
+          >
+            <Github size={14} /> Built by Sheridan Jamieson
+          </a>
+        </div>
+      </aside>
 
       {/* MAIN CONTENT */}
       <main className="flex-1 md:ml-72 relative">
@@ -377,6 +292,16 @@ function App() {
                 >
                   <BookOpen size={18}/> Syntax 101
                 </a>
+                
+                {/* NEW: Mobile Formula Doctor */}
+                <a 
+                  href="#formula-doctor" 
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="block px-4 py-4 border-b border-slate-100 text-purple-600 font-bold flex items-center gap-2"
+                >
+                  <Wand2 size={18}/> Debug Formulas
+                </a>
+
                 {formulas.map(f => (
                  <a 
                    key={f.id} 
@@ -441,6 +366,22 @@ function App() {
               </div>
           </section>
 
+          {/* NEW: FORMULA DOCTOR SECTION */}
+          <section id="formula-doctor" className="scroll-mt-32 mb-16">
+            <div className="bg-white rounded-xl border border-slate-200 p-6 md:p-8 shadow-sm">
+              <div className="mb-6">
+                <h2 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
+                  <Wand2 className="text-purple-600" />
+                  Formula Debugger
+                </h2>
+                <p className="text-slate-600 mt-2">
+                  Getting a <strong>#NAME?</strong> error? Paste your broken Excel or Google Sheets formula below, and we'll fix the syntax instantly.
+                </p>
+              </div>
+              <FormulaChecker />
+            </div>
+          </section>
+
           {/* THE FEED */}
           <div className="space-y-16">
             {formulas.map((formula) => (
@@ -453,14 +394,6 @@ function App() {
                   inputs={formula.inputs}
                   generator={formula.generator}
                 />
-                
-                {/* 2. NEW: CONDITIONALLY RENDER THE FORMULA DOCTOR HERE */}
-                {formula.id === 'if-logic' && (
-                  <div className="mt-8">
-                    <FormulaChecker />
-                  </div>
-                )}
-                
               </section>
             ))}
           </div>
