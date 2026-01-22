@@ -196,8 +196,9 @@ function App() {
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-slate-900 flex">
       
-      {/* SIDEBAR NAVIGATION - FIXED STRUCTURE */}
+      {/* SIDEBAR NAVIGATION */}
       <aside className="hidden md:flex w-72 flex-col fixed inset-y-0 border-r border-slate-200 bg-white z-10">
+        
         {/* Logo Section */}
         <div className="p-6 border-b border-slate-100 flex items-center gap-3">
           <div className="w-10 h-10 bg-sheet-green rounded-lg flex items-center justify-center text-white shadow-sm shadow-green-200">
@@ -210,51 +211,66 @@ function App() {
         </div>
 
         {/* Navigation Links */}
-        <nav className="flex-1 overflow-y-auto p-6 space-y-1">
-          {/* Syntax 101 */}
-          <a 
-            href="#syntax-101" 
-            className={`group flex items-center justify-between px-3 py-2 text-sm rounded-lg transition-all duration-200 mb-1 ${
-              activeSection === 'syntax-101' 
-                ? 'bg-blue-50 text-blue-600 font-bold shadow-sm' 
-                : 'text-slate-600 hover:text-blue-600 hover:bg-blue-50'
-            }`}
-          >
-            <span className="flex items-center gap-2"><BookOpen size={16}/> Syntax 101</span>
-            {activeSection === 'syntax-101' && <ChevronRight size={14} />}
-          </a>
-
-          {/* NEW: Formula Doctor Link */}
-          <a 
-            href="#formula-doctor" 
-            className={`group flex items-center justify-between px-3 py-2 text-sm rounded-lg transition-all duration-200 mb-6 ${
-              activeSection === 'formula-doctor' 
-                ? 'bg-purple-50 text-purple-600 font-bold shadow-sm' 
-                : 'text-slate-600 hover:text-purple-600 hover:bg-purple-50'
-            }`}
-          >
-            <span className="flex items-center gap-2"><Wand2 size={16}/> Debug Formulas</span>
-            {activeSection === 'formula-doctor' && <ChevronRight size={14} />}
-          </a>
-
-          <p className="px-2 text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Core Functions</p>
+        <nav className="flex-1 overflow-y-auto p-6">
           
-          {formulas.map(f => (
-            <a 
-              key={f.id} 
-              href={`#${f.id}`} 
-              className={`group flex items-center justify-between px-3 py-2 text-sm rounded-lg transition-all duration-200 ${
-                activeSection === f.id 
-                  ? 'bg-green-50 text-sheet-green font-bold shadow-sm' 
-                  : 'text-slate-600 hover:text-sheet-green hover:bg-slate-50'
-              }`}
-            >
-              <span>{f.title.split(' (')[0]}</span>
-              {activeSection === f.id && (
-                <ChevronRight size={14} className="text-sheet-green" />
-              )}
-            </a>
-          ))}
+          {/* TOP SECTION: TOOLS */}
+          <div className="mb-6">
+            <p className="px-3 text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Tools</p>
+            <div className="space-y-1">
+              {/* Syntax 101 */}
+              <a 
+                href="#syntax-101" 
+                className={`group flex items-center justify-between px-3 py-2 text-sm rounded-lg transition-all duration-200 ${
+                  activeSection === 'syntax-101' 
+                    ? 'bg-blue-50 text-blue-600 font-bold shadow-sm' 
+                    : 'text-slate-600 hover:text-blue-600 hover:bg-blue-50'
+                }`}
+              >
+                <span className="flex items-center gap-2"><BookOpen size={16}/> Syntax 101</span>
+                {activeSection === 'syntax-101' && <ChevronRight size={14} />}
+              </a>
+
+              {/* Formula Doctor */}
+              <a 
+                href="#formula-doctor" 
+                className={`group flex items-center justify-between px-3 py-2 text-sm rounded-lg transition-all duration-200 ${
+                  activeSection === 'formula-doctor' 
+                    ? 'bg-purple-50 text-purple-600 font-bold shadow-sm' 
+                    : 'text-slate-600 hover:text-purple-600 hover:bg-purple-50'
+                }`}
+              >
+                <span className="flex items-center gap-2"><Wand2 size={16}/> Debug Formulas</span>
+                {activeSection === 'formula-doctor' && <ChevronRight size={14} />}
+              </a>
+            </div>
+          </div>
+
+          {/* DIVIDER */}
+          <hr className="border-slate-100 mb-6 mx-2" />
+
+          {/* BOTTOM SECTION: FUNCTIONS */}
+          <div>
+            <p className="px-3 text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Core Functions</p>
+            <div className="space-y-1">
+              {formulas.map(f => (
+                <a 
+                  key={f.id} 
+                  href={`#${f.id}`} 
+                  className={`group flex items-center justify-between px-3 py-2 text-sm rounded-lg transition-all duration-200 ${
+                    activeSection === f.id 
+                      ? 'bg-green-50 text-sheet-green font-bold shadow-sm' 
+                      : 'text-slate-600 hover:text-sheet-green hover:bg-slate-50'
+                  }`}
+                >
+                  <span>{f.title.split(' (')[0]}</span>
+                  {activeSection === f.id && (
+                    <ChevronRight size={14} className="text-sheet-green" />
+                  )}
+                </a>
+              ))}
+            </div>
+          </div>
+
         </nav>
         
         {/* Footer Link */}
