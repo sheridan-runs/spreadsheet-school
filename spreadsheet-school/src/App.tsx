@@ -348,6 +348,22 @@ function App() {
             <p className="text-lg md:text-xl text-slate-600 max-w-2xl leading-relaxed">
               You know <em>what</em> you want the spreadsheet to do, but you forgot the formula order. We get it.
             </p>
+            
+            {/* NEW: Quick Jump Buttons */}
+            <div className="flex flex-wrap gap-3 pt-2">
+              <a 
+                href="#formula-doctor" 
+                className="inline-flex items-center gap-2 px-4 py-2 bg-purple-50 text-purple-700 font-bold rounded-lg hover:bg-purple-100 transition-colors text-sm"
+              >
+                <Wand2 size={16} /> Fix broken formula
+              </a>
+              <a 
+                href="#syntax-101" 
+                className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-700 font-bold rounded-lg hover:bg-blue-100 transition-colors text-sm"
+              >
+                <BookOpen size={16} /> Cheat Sheet
+              </a>
+            </div>
           </div>
 
           {/* SYNTAX CHEAT SHEET */}
