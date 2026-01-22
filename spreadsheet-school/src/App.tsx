@@ -341,30 +341,32 @@ function App() {
         <div className="max-w-4xl mx-auto px-6 py-16 space-y-16">
           
           {/* Hero */}
-          <div className="space-y-6 md:pr-12">
-            <h1 className="text-4xl md:text-6xl font-black tracking-tight text-slate-900 leading-tight">
-              Stop memorising <br/><span className="text-sheet-green">syntax.</span>
-            </h1>
-            <p className="text-lg md:text-xl text-slate-600 max-w-2xl leading-relaxed">
-              You know <em>what</em> you want the spreadsheet to do, but you forgot the formula order. We get it.
-            </p>
-            
-            {/* NEW: Quick Jump Buttons */}
-            <div className="flex flex-wrap gap-3 pt-2">
-              <a 
-                href="#formula-doctor" 
-                className="inline-flex items-center gap-2 px-4 py-2 bg-purple-50 text-purple-700 font-bold rounded-lg hover:bg-purple-100 transition-colors text-sm"
-              >
-                <Wand2 size={16} /> Fix broken formula
-              </a>
-              <a 
-                href="#syntax-101" 
-                className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-700 font-bold rounded-lg hover:bg-blue-100 transition-colors text-sm"
-              >
-                <BookOpen size={16} /> Cheat Sheet
-              </a>
-            </div>
-          </div>
+<div className="space-y-6 md:pr-12">
+  <h1 className="text-4xl md:text-6xl font-black tracking-tight text-slate-900 leading-tight">
+    Stop memorising <br/><span className="text-sheet-green">syntax.</span>
+  </h1>
+  <p className="text-lg md:text-xl text-slate-600 max-w-2xl leading-relaxed">
+    You know <em>what</em> you want the spreadsheet to do, but you forgot the formula order. We get it.
+  </p>
+  
+  {/* Quick Jump Buttons */}
+  <div className="flex flex-wrap gap-3 pt-2">
+    <a 
+      href="#formula-doctor" 
+      className="inline-flex items-center gap-2 px-4 py-2 bg-purple-50 text-purple-700 font-bold rounded-lg hover:bg-purple-100 transition-colors text-sm"
+    >
+      <Wand2 size={16} /> Fix broken formula
+    </a>
+    
+    {/* UPDATED BUTTON BELOW */}
+    <a 
+      href="#vlookup" 
+      className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 text-slate-700 font-bold rounded-lg hover:bg-slate-50 hover:text-sheet-green transition-colors text-sm shadow-sm"
+    >
+      <FileSpreadsheet size={16} /> Browse Formulas
+    </a>
+  </div>
+</div>
 
           {/* SYNTAX CHEAT SHEET */}
           <section id="syntax-101" className="bg-blue-50 rounded-xl border border-blue-100 p-6 md:p-8 scroll-mt-32">
