@@ -19,12 +19,6 @@ export const FormulaChecker = () => {
 
   return (
     <div className="max-w-2xl mx-auto p-6 bg-white rounded-xl shadow-sm border border-slate-200 my-10">
-      <div className="flex items-center gap-2 mb-4">
-        <div className="p-2 bg-purple-100 rounded-lg">
-          <Wand2 className="w-5 h-5 text-purple-600" />
-        </div>
-        <h2 className="text-xl font-bold text-slate-800">Formula Doctor</h2>
-      </div>
       
       <div className="space-y-4">
         <div>
