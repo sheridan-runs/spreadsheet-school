@@ -91,8 +91,55 @@
     </script>
     
   </head>
-  <body>
-    <div id="root"></div>
+  <body style="background-color: #0f172a; margin: 0;">
+    <div id="root">
+      
+      <div style="font-family: system-ui, -apple-system, sans-serif; color: #e2e8f0; line-height: 1.6; padding: 40px; max-width: 800px; margin: 0 auto; text-align: center;">
+        
+        <header style="margin-bottom: 60px; margin-top: 40px;">
+          <div style="display: inline-block; padding: 4px 12px; border-radius: 99px; background: rgba(16, 185, 129, 0.1); color: #34d399; font-size: 12px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px;">
+            Free Interactive Cheat Sheet
+          </div>
+          <h1 style="font-size: 48px; font-weight: 900; letter-spacing: -2px; margin: 0 0 20px 0; color: white;">
+            SPREADSHEET <span style="color: #34d399;">SCHOOL.</span>
+          </h1>
+          <p style="font-size: 20px; color: #94a3b8; max-w: 600px; margin: 0 auto;">
+            Stop memorising syntax. <br>
+            Instant formula generators for <strong>VLOOKUP</strong>, <strong>IF</strong>, and <strong>SUMIFS</strong>.
+          </p>
+        </header>
+
+        <main style="text-align: left; max-width: 650px; margin: 0 auto;">
+          <h2 style="font-size: 24px; font-weight: 800; color: white; margin-bottom: 30px; text-align: center;">Formula Guides</h2>
+          
+          <div style="margin-bottom: 40px; border-bottom: 1px solid #334155; padding-bottom: 20px;">
+            <h3 style="font-size: 18px; font-weight: 700; color: #f8fafc; margin-bottom: 10px;">What is VLOOKUP?</h3>
+            <p style="color: #cbd5e1;">VLOOKUP (Vertical Lookup) searches for a value in the first column of a dataset and returns a value in the same row from a specified column. It is used to merge two lists based on a common key.</p>
+          </div>
+
+          <div style="margin-bottom: 40px; border-bottom: 1px solid #334155; padding-bottom: 20px;">
+            <h3 style="font-size: 18px; font-weight: 700; color: #f8fafc; margin-bottom: 10px;">How does the IF function work?</h3>
+            <p style="color: #cbd5e1;">The IF function checks if a condition is true or false. If the condition is met (True), it returns one value; if not (False), it returns a different value. It is the foundation of spreadsheet logic.</p>
+          </div>
+
+          <div style="margin-bottom: 40px; border-bottom: 1px solid #334155; padding-bottom: 20px;">
+            <h3 style="font-size: 18px; font-weight: 700; color: #f8fafc; margin-bottom: 10px;">VLOOKUP vs XLOOKUP?</h3>
+            <p style="color: #cbd5e1;">VLOOKUP only searches left-to-right and breaks if columns move. XLOOKUP (the modern replacement) can search in any direction, defaults to an exact match, and is much more robust.</p>
+          </div>
+
+          <div style="margin-bottom: 40px; border-bottom: 1px solid #334155; padding-bottom: 20px;">
+            <h3 style="font-size: 18px; font-weight: 700; color: #f8fafc; margin-bottom: 10px;">How does SUMIFS work?</h3>
+            <p style="color: #cbd5e1;">SUMIFS adds up numbers in a range, but only if they meet specific criteria. For example, summing 'Revenue' only where 'Region' is 'North' and 'Status' is 'Paid'.</p>
+          </div>
+        </main>
+        
+        <footer style="margin-top: 60px; font-size: 14px; color: #64748b;">
+             Built by <a href="https://sheridanjamieson.com" style="color: #34d399; text-decoration: none;">Sheridan Jamieson</a> | <a href="https://nurture.kiwi" style="color: #34d399; text-decoration: none;">Nurture Virtual CFO</a> | <a href="https://runwith.club" style="color: #34d399; text-decoration: none;">Run With Club</a>
+        </footer>
+
+      </div>
+    </div>
+
     <script type="module" src="/src/main.tsx"></script>
-  </body>
+</body>
 </html>
