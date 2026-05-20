@@ -452,8 +452,8 @@ function App() {
                   &copy; {new Date().getFullYear()} Spreadsheet School.
                 </div>
                 <div className="text-sm font-medium text-slate-600">
-                   Part of the <a href="https://nurture.kiwi" target="_blank" className="text-slate-900 hover:text-sheet-green underline decoration-slate-300 underline-offset-4 transition-colors">Nurture</a> Portfolio.
-                </div>
+  Part of the <a href="https://nurture.kiwi" target="_blank" rel="noopener noreferrer" className="text-slate-900 hover:text-sheet-green underline decoration-slate-300 underline-offset-4 transition-colors">Nurture</a> Portfolio · Also by Nurture: <a href="https://owly.co.nz" target="_blank" rel="noopener noreferrer" className="text-slate-900 hover:text-sheet-green underline decoration-slate-300 underline-offset-4 transition-colors">Owly.co.nz</a>
+</div>
              </div>
           </footer>
         </div>
